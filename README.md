@@ -1,9 +1,13 @@
 #Decisions:
 
-Access: start the server and navigate to either:
+Import data by running: 
 
-* root path
-* /campaigns
+    bin/import_votes <filename>
+
+Start the server locally and navigate to:
+
+    http:/localhost:3000/
+    http:/localhost:3000/campaigns
 
 ## Use rspec for testing
 This is just a personal preference.
