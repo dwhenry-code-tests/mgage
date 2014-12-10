@@ -74,7 +74,7 @@ describe Votes::Counter do
     it 'vote is invalid' do
       counter = described_class.new(input_stream)
       expect(counter.count).to eq(
-        nil => { invalid: 1 },
+        ["ssss_uk_01B", nil] => { invalid: 1 },
       )
     end
   end
@@ -85,7 +85,7 @@ describe Votes::Counter do
     it 'vote is invalid' do
       counter = described_class.new(input_stream)
       expect(counter.count).to eq(
-        nil => { invalid: 1 },
+        [nil, "john"] => { invalid: 1 },
       )
     end
   end
@@ -96,7 +96,7 @@ describe Votes::Counter do
     it 'vote is invalid' do
       counter = described_class.new(input_stream)
       expect(counter.count).to eq(
-        nil => { invalid: 1 },
+        ["ssss_uk_02A", "Antony"] => { invalid: 1 },
       )
     end
   end

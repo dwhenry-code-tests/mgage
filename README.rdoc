@@ -10,5 +10,10 @@ The database is only expected to have a small amount of data stored in it.
 
 ## Group logic around the core object (Votes) rather than the actions (Importing/Counting)
 This will help to keep the related code together.
-I have moved all the code to a single file, one of the last steps will be to split out calles to
-individual files if required.
+I have moved all the code to a single file, one of the last steps will
+be to split out calles to individual files if required.
+
+## Have multiple regular expressions
+I have performed the line validation separately to the data extraction
+so that I can ensure as much valid data as possible is captured.
+

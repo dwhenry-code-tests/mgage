@@ -10,7 +10,11 @@ module Votes
   end
 
   class Counter
-    REGEX = /^VOTE \d+ Campaign:([^ ]+) Validity:([^ ]*) Choice:([^ ]*) CONN:[^ ]+ MSISDN:[^ ]+ GUID:[^ ]+ Shortcode:[^ ]+$/
+    VALIDITY_REGEX = /Validity:([^ ]+)/
+    VALID_VALIDITY_VALUE = 'during'
+    CAMPAIGN_REGEX = /Campaign:([^ ]+)/
+    CHOICE_REGEX = /Choice:([^ ]+)/
+    VALIDATION_REGEX = /^VOTE \d+ #{CAMPAIGN_REGEX} #{VALIDITY_REGEX} #{CHOICE_REGEX} CONN:[^ ]+ MSISDN:[^ ]+ GUID:[^ ]+ Shortcode:[^ ]+$/
 
     def initialize(io_stream)
       @io_stream = io_stream
@@ -21,18 +25,32 @@ module Votes
       while !@io_stream.eof do
         line = @io_stream.readline
 
-        if line.valid_encoding? && match = line.match(REGEX)
-          campaign = match[1]
-          choice = match[3] == '' ? nil : match[3]
-          valid = (choice && match[2] == 'during')
-          validity = valid ? :valid : :invalid
-          key = choice && [campaign, choice]
-          @result[key][validity] += 1
+        if line.valid_encoding?
+          valid_line = line =~ VALIDATION_REGEX
         else
-          @result[nil][:invalid] += 1
+          # non utf-8 characters in the string mark it as invalid
+          valid_line = false
+          # this is required for future regex to work
+          line.force_encoding('binary')
         end
+
+        campaign = regex_value(line, CAMPAIGN_REGEX)
+        choice = regex_value(line, CHOICE_REGEX)
+        key = [campaign, choice]
+
+        valid = valid_line && regex_value(line, VALIDITY_REGEX) == VALID_VALIDITY_VALUE
+        validity = valid ? :valid : :invalid
+
+        @result[key][validity] += 1
       end
       @result
+    end
+
+    private
+
+    def regex_value(line, regex)
+      match = line.match(regex)
+      match && match[1]
     end
   end
 end
