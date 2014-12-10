@@ -1,5 +1,3 @@
-require 'votes/importer'
-
 module Votes
   class Counter
     VALID_VALIDITY_VALUE = 'during'

@@ -1,3 +1,5 @@
+require 'votes/counter'
+
 module Votes
   class MissingFilename < StandardError; end
   class MissingFile < StandardError; end
@@ -12,7 +14,7 @@ module Votes
 
       begin
         io_stream = File.open(file_path)
-        counter = Counter.new(io_stream)
+        counter = Votes::Counter.new(io_stream)
       ensure
         io_stream.try(:close)
       end

@@ -1,0 +1,9 @@
+<h1>Campaigns</h1>
+
+<div>Click on a campaign to set results</div>
+
+<% @campaigns.each do |campaign| %>
+  <div>
+    <%= link_to campaign.name, campaign_path(campaign) %>
+  </div>
+<% end %>
