@@ -5,7 +5,7 @@ require APP_PATH
 # set Rails.env here if desired
 Rails.application.require_environment!
 
-require 'votes'
+require 'votes/importer'
 
 begin
   filename = ARGV[0]

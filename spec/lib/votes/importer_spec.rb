@@ -1,5 +1,5 @@
 require 'rails_helper'
-require 'votes'
+require 'votes/importer'
 
 describe Votes::Importer do
   let(:io_stream) { StringIO.new("") }

@@ -1,6 +1,6 @@
 require 'spec_helper'
 require 'tempfile'
-require 'votes'
+require 'votes/counter'
 
 describe Votes::Counter do
   let(:input_stream) { StringIO.new(input_strings.join()) }
