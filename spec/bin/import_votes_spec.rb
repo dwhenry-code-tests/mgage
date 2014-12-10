@@ -16,7 +16,7 @@ describe 'import_votes script' do
     it 'imports and stores data in the database' do
       output = `'#{Rails.root}/bin/import_votes'`
 
-      expect(output).to eq("USAGE: bin/import_votes <filename>\n")
+      expect(output).to eq("Error during processing: Votes::MissingFilename\nUSAGE: bin/import_votes <filename>\n")
     end
   end
 end

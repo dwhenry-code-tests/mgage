@@ -10,22 +10,22 @@ module Votes
         raise Votes::MissingFile
       end
 
-      # count the votes
-      io_stream = File.open(file_path)
-      counter = Counter.new(io_stream)
+      begin
+        io_stream = File.open(file_path)
+        counter = Counter.new(io_stream)
+      ensure
+        io_stream.try(:close)
+      end
 
-      # save votes to database
       counter.counts.each do |(campaign_name, choice_name), counts|
         campaign = Campaign.find_or_create_by(name: campaign_name)
         choice = campaign.choices.find_or_initialize_by(name: choice_name)
         choice.votes ||= 0
-        choice.votes += counts[:valid] || 0
         choice.invalid_votes ||= 0
-        choice.invalid_votes += counts[:invalid] || 0
-        choice.save
+        choice.votes += counts[:valid] if counts[:valid]
+        choice.invalid_votes += counts[:invalid] if counts[:invalid]
+        choice.save!
       end
-    ensure
-      io_stream.try(:close)
     end
   end
 
