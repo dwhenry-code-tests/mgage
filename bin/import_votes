@@ -8,11 +8,9 @@ Rails.application.require_environment!
 require 'votes'
 
 begin
-  file = File.open(ARGV[0])
-  puts Votes::Counter.new(file).counts.inspect
+  filename = ARGV[0]
+  Votes::Importer.import(filename)
 rescue => e
-  puts e.inspect
-  puts e.backtrace
-ensure
-  file.close
+  puts "Error during processing: #{e.class}:#{e.message}"
+  puts 'USAGE: bin/import_votes <filename>'
 end
