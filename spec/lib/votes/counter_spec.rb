@@ -10,7 +10,7 @@ describe Votes::Counter do
     it 'counts the votes' do
       counter = described_class.new(input_stream)
       expect(counter.counts).to eq(
-        ["ssss_uk_01B", "Antony"] => { valid: 1 }
+        ["ssss_uk_01B", "Antony"] => { votes: 1 }
       )
     end
   end
@@ -21,8 +21,8 @@ describe Votes::Counter do
     it 'counts the votes' do
       counter = described_class.new(input_stream)
       expect(counter.counts).to eq(
-        ["ssss_uk_01B", "john"] => { valid: 1 },
-        ["ssss_uk_01B", "frank"] => { valid: 1 },
+        ["ssss_uk_01B", "john"] => { votes: 1 },
+        ["ssss_uk_01B", "frank"] => { votes: 1 },
       )
     end
   end
@@ -33,7 +33,7 @@ describe Votes::Counter do
     it 'vote is invalid' do
       counter = described_class.new(input_stream)
       expect(counter.counts).to eq(
-        ["ssss_uk_01B", "john"] => { invalid: 1 },
+        ["ssss_uk_01B", "john"] => { invalid_votes: 1 },
       )
     end
   end
@@ -44,7 +44,7 @@ describe Votes::Counter do
     it 'vote is invalid' do
       counter = described_class.new(input_stream)
       expect(counter.counts).to eq(
-        ["ssss_uk_01B", "john"] => { invalid: 1 },
+        ["ssss_uk_01B", "john"] => { invalid_votes: 1 },
       )
     end
   end
@@ -55,7 +55,7 @@ describe Votes::Counter do
     it 'vote is invalid' do
       counter = described_class.new(input_stream)
       expect(counter.counts).to eq(
-        ["ssss_uk_01B", nil] => { invalid: 1 },
+        ["ssss_uk_01B", nil] => { invalid_votes: 1 },
       )
     end
   end
@@ -66,7 +66,7 @@ describe Votes::Counter do
     it 'vote is invalid' do
       counter = described_class.new(input_stream)
       expect(counter.counts).to eq(
-        [nil, "john"] => { invalid: 1 },
+        [nil, "john"] => { invalid_votes: 1 },
       )
     end
   end
@@ -77,7 +77,7 @@ describe Votes::Counter do
     it 'vote is invalid' do
       counter = described_class.new(input_stream)
       expect(counter.counts).to eq(
-        ["ssss_uk_02A", "Antony"] => { invalid: 1 },
+        ["ssss_uk_02A", "Antony"] => { invalid_votes: 1 },
       )
     end
   end

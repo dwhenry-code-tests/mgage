@@ -22,8 +22,8 @@ module Votes
         choice = campaign.choices.find_or_initialize_by(name: choice_name)
         choice.votes ||= 0
         choice.invalid_votes ||= 0
-        choice.votes += counts[:valid] if counts[:valid]
-        choice.invalid_votes += counts[:invalid] if counts[:invalid]
+        choice.votes += counts[:votes] if counts[:votes]
+        choice.invalid_votes += counts[:invalid_votes] if counts[:invalid_votes]
         choice.save!
       end
     end
@@ -55,7 +55,7 @@ module Votes
         key = [campaign, choice]
 
         valid = valid_line && regex_value(line, VALIDITY_REGEX) == VALID_VALIDITY_VALUE
-        validity = valid ? :valid : :invalid
+        validity = valid ? :votes : :invalid_votes
 
         @counts[key][validity] += 1
       end

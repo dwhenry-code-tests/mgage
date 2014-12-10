@@ -4,7 +4,7 @@ require 'votes'
 describe Votes::Importer do
   let(:io_stream) { StringIO.new("") }
   let(:data_file_path) { Tempfile.new('temp').path }
-  let(:counts) { { ['camp_1', 'choice_a'] => { valid: 10, invalid: 5 } } }
+  let(:counts) { { ['camp_1', 'choice_a'] => { votes: 10, invalid_votes: 5 } } }
   let(:counter) { double('Votes::Counter', counts: counts) }
 
   context 'when the file is valid' do
