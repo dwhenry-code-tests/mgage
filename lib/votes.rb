@@ -1,17 +1,37 @@
 module Votes
+  class MissingFilename < StandardError; end
+  class MissingFile < StandardError; end
+
   class Importer
-    def self.import(campaign_name, file_path)
+    def self.import(file_path)
+      if file_path.blank?
+        raise Votes::MissingFilename
+      elsif not File.exists?(file_path)
+        raise Votes::MissingFile
+      end
+
       # count the votes
       io_stream = File.open(file_path)
-      Counter.new(io_stream)
+      counter = Counter.new(io_stream)
 
       # save votes to database
+      counter.counts.each do |(campaign_name, choice_name), counts|
+        campaign = Campaign.find_or_create_by(name: campaign_name)
+        choice = campaign.choices.find_or_initialize_by(name: choice_name)
+        choice.votes ||= 0
+        choice.votes += counts[:valid] || 0
+        choice.invalid_votes ||= 0
+        choice.invalid_votes += counts[:invalid] || 0
+        choice.save
+      end
+    ensure
+      io_stream.try(:close)
     end
   end
 
   class Counter
-    VALIDITY_REGEX = /Validity:([^ ]+)/
     VALID_VALIDITY_VALUE = 'during'
+    VALIDITY_REGEX = /Validity:([^ ]+)/
     CAMPAIGN_REGEX = /Campaign:([^ ]+)/
     CHOICE_REGEX = /Choice:([^ ]+)/
     VALIDATION_REGEX = /^VOTE \d+ #{CAMPAIGN_REGEX} #{VALIDITY_REGEX} #{CHOICE_REGEX} CONN:[^ ]+ MSISDN:[^ ]+ GUID:[^ ]+ Shortcode:[^ ]+$/
