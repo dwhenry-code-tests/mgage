@@ -21,8 +21,9 @@ end
 
 
 describe Votes::Counter do
+  let(:input_stream) { String.new(input_strings.join()) }
   context 'when only a single valid vote exists' do
-    let(:input_stream) { String.new("VOTE 1168041805 Campaign:ssss_uk_01B Validity:during Choice:Antony CONN:MIG01TU MSISDN:00777778359999 GUID:E6109CA1-7756-45DC-8EE7-677CA7C3D7F3 Shortcode:63334\n")}
+    let(:input_strings) { [vote_for("Antony")] }
 
     it 'counts the votes' do
       counter = described_class.new(input_stream)
@@ -33,5 +34,9 @@ describe Votes::Counter do
         }
       )
     end
+  end
+
+  def vote_for(choice)
+    "VOTE 1168041805 Campaign:ssss_uk_01B Validity:during Choice:#{choice} CONN:MIG01TU MSISDN:00777778359999 GUID:E6109CA1-7756-45DC-8EE7-677CA7C3D7F3 Shortcode:63334\n"
   end
 end
