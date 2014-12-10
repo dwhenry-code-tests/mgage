@@ -17,15 +17,20 @@ This can be easily changed later if required.
 The database is only expected to have a small amount of data stored in it.
 
 ## Separate counting logic from saving logic.
+This feels like a good separation of object.
 
 ## Group logic around the core object (Votes) rather than the actions (Importing/Counting)
-This will help to keep the related code together.
-I have moved all the code to a single file, one of the last steps will
-be to split out calles to individual files if required.
+I initially had the other way around, but this felt like a better file 
+placement as it helped keep the related code together.
 
-## Have multiple regular expressions
+## Having multiple regular expressions
 I have performed the line validation separately to the data extraction
 so that I can ensure as much valid data as possible is captured.
+This does have some negative performance costs, however at this stage I 
+am willing to sacrifice speed for readability. If this is an issue the 
+validation match can be rewritten to do both tasks - this would be
+significantly more complex and difficult to understand, something i prefer
+to avoid with regular expressions. 
 
 ## Move file processing to the initializer code in the counter
 This feel like a more natural pass to do the processing rather than
@@ -33,13 +38,13 @@ only performing it lazily as required.
 
 ## Pass an IO object to the Counter
 I figured this would foster thinking about what is processed, does it have
-to be a file? It also makes the test easier to write (and quicker) as I
-don't have create a temp file for each one.
+to be a file, can it be a direct stream of data instead? It also makes 
+the test easier to write - and quicker to run as I don't have create a 
+temp files.
 
 ## Data storage
-I have choosen to store the data in a denormalized form (i.e. Campaign
-and Choice AR object). Why, because it a rails app and storing it as json
-on the object would be crazy.
+I have chosen to store the data in a multiple tables - Campaign
+and Choice. Because it a rails app.
 
 ## UI testing
 I have not written any test for:
