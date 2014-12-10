@@ -2,3 +2,4 @@ Decisions:
 
 * Use rspec for testing
 * Leave database as SQLite until need proves otherwise
+* separate counting logic from saving logic
