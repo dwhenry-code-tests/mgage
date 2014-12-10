@@ -17,3 +17,12 @@ be to split out calles to individual files if required.
 I have performed the line validation separately to the data extraction
 so that I can ensure as much valid data as possible is captured.
 
+## Move file processing to the initializer code in the counter
+This feel like a more natural pass to do the processing rather than
+only performing it lazily as required.
+
+## Pass an IO object to the Counter
+I figured this would foster thinking about what is processed, does it have
+to be a file? It also makes the test easier to write (and quicker) as I
+don't have create a temp file for each one.
+

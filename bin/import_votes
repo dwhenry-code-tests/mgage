@@ -9,7 +9,7 @@ require 'votes'
 
 begin
   file = File.open(ARGV[0])
-  puts Votes::Counter.new(file).count.inspect
+  puts Votes::Counter.new(file).counts.inspect
 rescue => e
   puts e.inspect
   puts e.backtrace
