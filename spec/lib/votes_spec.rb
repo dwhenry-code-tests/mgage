@@ -29,10 +29,7 @@ describe Votes::Counter do
     it 'counts the votes' do
       counter = described_class.new(input_stream)
       expect(counter.count).to eq(
-        "Antony" => {
-          valid: 1,
-          invalid: 0
-        }
+        ["ssss_uk_01B", "Antony"] => { valid: 1 }
       )
     end
   end
@@ -43,8 +40,8 @@ describe Votes::Counter do
     it 'counts the votes' do
       counter = described_class.new(input_stream)
       expect(counter.count).to eq(
-        "john" => { valid: 1, invalid: 0 },
-        "frank" => { valid: 1, invalid: 0 },
+        ["ssss_uk_01B", "john"] => { valid: 1 },
+        ["ssss_uk_01B", "frank"] => { valid: 1 },
       )
     end
   end
@@ -55,7 +52,7 @@ describe Votes::Counter do
     it 'vote is invalid' do
       counter = described_class.new(input_stream)
       expect(counter.count).to eq(
-        "john" => { valid: 0, invalid: 1 },
+        ["ssss_uk_01B", "john"] => { invalid: 1 },
       )
     end
   end
@@ -66,7 +63,7 @@ describe Votes::Counter do
     it 'vote is invalid' do
       counter = described_class.new(input_stream)
       expect(counter.count).to eq(
-        "john" => { valid: 0, invalid: 1 },
+        ["ssss_uk_01B", "john"] => { invalid: 1 },
       )
     end
   end
@@ -77,7 +74,7 @@ describe Votes::Counter do
     it 'vote is invalid' do
       counter = described_class.new(input_stream)
       expect(counter.count).to eq(
-        nil => { valid: 0, invalid: 1 },
+        nil => { invalid: 1 },
       )
     end
   end
@@ -88,24 +85,18 @@ describe Votes::Counter do
     it 'vote is invalid' do
       counter = described_class.new(input_stream)
       expect(counter.count).to eq(
-        nil => { valid: 0, invalid: 1 },
+        nil => { invalid: 1 },
       )
     end
   end
 
   context 'when line contains non-utf8 characters' do
-    let(:file) do
-      file = Tempfile.new('non-utf8')
-      file.write("VOTE 1168123287 Campaign:ssss_uk_02A Validity:during Choice:Antony CONN:MIG01XU MSISDN:00777779989999 GUID:029DBA7C-26E7-4F82-BAE9-2DEC2C665F6B Shortcode:63334\xA1\n")
-      file.rewind
-      file
-    end
-    after { file.unlink }
+    let(:input_strings) { ["VOTE 1168123287 Campaign:ssss_uk_02A Validity:during Choice:Antony CONN:MIG01XU MSISDN:00777779989999 GUID:029DBA7C-26E7-4F82-BAE9-2DEC2C665F6B Shortcode:63334\xA1\n"] }
 
     it 'vote is invalid' do
-      counter = described_class.new(file)
+      counter = described_class.new(input_stream)
       expect(counter.count).to eq(
-        nil => { valid: 0, invalid: 1 },
+        nil => { invalid: 1 },
       )
     end
   end
