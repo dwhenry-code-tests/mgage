@@ -1,4 +1,5 @@
 require 'spec_helper'
+require 'tempfile'
 require 'votes'
 
 describe Votes::Importer do
@@ -48,10 +49,10 @@ describe Votes::Counter do
     end
   end
 
-  context 'when pre vote exists' do
+  context 'when `pre` validity vote' do
     let(:input_strings) { [pre_vote_for('john')] }
 
-    it 'counts the votes' do
+    it 'vote is invalid' do
       counter = described_class.new(input_stream)
       expect(counter.count).to eq(
         "john" => { valid: 0, invalid: 1 },
@@ -59,10 +60,21 @@ describe Votes::Counter do
     end
   end
 
-  context 'when validate vote without a name' do
+  context 'when `post` validity vote' do
+    let(:input_strings) { [post_vote_for('john')] }
+
+    it 'vote is invalid' do
+      counter = described_class.new(input_stream)
+      expect(counter.count).to eq(
+        "john" => { valid: 0, invalid: 1 },
+      )
+    end
+  end
+
+  context 'when valid vote without a name' do
     let(:input_strings) { [vote_for('')] }
 
-    it 'counts the votes' do
+    it 'vote is invalid' do
       counter = described_class.new(input_stream)
       expect(counter.count).to eq(
         nil => { valid: 0, invalid: 1 },
@@ -73,8 +85,25 @@ describe Votes::Counter do
   context 'when line is not well formed' do
     let(:input_strings) { ["Validity:during Choice:john"] }
 
-    it 'counts the votes' do
+    it 'vote is invalid' do
       counter = described_class.new(input_stream)
+      expect(counter.count).to eq(
+        nil => { valid: 0, invalid: 1 },
+      )
+    end
+  end
+
+  context 'when line contains non-utf8 characters' do
+    let(:file) do
+      file = Tempfile.new('non-utf8')
+      file.write("VOTE 1168123287 Campaign:ssss_uk_02A Validity:during Choice:Antony CONN:MIG01XU MSISDN:00777779989999 GUID:029DBA7C-26E7-4F82-BAE9-2DEC2C665F6B Shortcode:63334\xA1\n")
+      file.rewind
+      file
+    end
+    after { file.unlink }
+
+    it 'vote is invalid' do
+      counter = described_class.new(file)
       expect(counter.count).to eq(
         nil => { valid: 0, invalid: 1 },
       )
@@ -87,5 +116,9 @@ describe Votes::Counter do
 
   def pre_vote_for(choice)
     vote_for(choice, 'pre')
+  end
+
+  def post_vote_for(choice)
+    vote_for(choice, 'post')
   end
 end

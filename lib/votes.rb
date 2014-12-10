@@ -11,6 +11,7 @@ module Votes
 
   class Counter
     REGEX = /^VOTE \d+ Campaign:[^ ]+ Validity:([^ ]*) Choice:([^ ]*) CONN:[^ ]+ MSISDN:[^ ]+ GUID:[^ ]+ Shortcode:[^ ]+$/
+
     def initialize(io_stream)
       @io_stream = io_stream
       @result = Hash.new { |h, k| h[k] = { valid: 0, invalid: 0 } }
@@ -19,19 +20,15 @@ module Votes
     def count
       while !@io_stream.eof do
         line = @io_stream.readline
-        match = line.match(REGEX)
-        if match
-          validity = match[1] == 'during' ? :valid : :invalid
-          choice = match[2]
-          if choice == ''
-            @result[nil][:invalid] += 1
-          else
-            @result[choice][validity] += 1
-          end
+
+        if line.valid_encoding? && match = line.match(REGEX)
+          choice = match[2] == '' ? nil : match[2]
+          valid = (choice && match[1] == 'during')
+          validity = valid ? :valid : :invalid
+          @result[choice][validity] += 1
         else
           @result[nil][:invalid] += 1
         end
-
       end
       @result
     end

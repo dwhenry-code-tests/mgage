@@ -1,0 +1,18 @@
+#!/usr/bin/env ruby
+APP_PATH = File.expand_path('../../config/application',  __FILE__)
+require File.expand_path('../../config/boot',  __FILE__)
+require APP_PATH
+# set Rails.env here if desired
+Rails.application.require_environment!
+
+require 'votes'
+
+begin
+  file = File.open(ARGV[0])
+  puts Votes::Counter.new(file).count.inspect
+rescue => e
+  puts e.inspect
+  puts e.backtrace
+ensure
+  file.close
+end
